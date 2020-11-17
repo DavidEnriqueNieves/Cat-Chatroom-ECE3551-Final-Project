@@ -1,0 +1,5 @@
+install npm
+
+npm init
+
+npm install --save influx
