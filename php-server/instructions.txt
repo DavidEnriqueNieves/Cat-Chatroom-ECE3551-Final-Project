@@ -1,0 +1,9 @@
+sudo apt install composer
+
+composer require crodas/influx-php:\*
+
+Not using this crap anymore
+//composer require influxdb/influxdb-php
+
+
+sudo apt install php-curl

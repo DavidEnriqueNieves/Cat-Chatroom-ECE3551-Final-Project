@@ -1,0 +1,55 @@
+<!-- ./public/index.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>BotChat</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">i
+
+
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script type='text/javascript'>
+// console.log("PHP HOST");
+// console.log(process.env.PHP_HOST);
+// console.log("PHP PORT");
+// console.log(process.env.PHP_PORT);
+// 
+$(document).ready(function() {
+	console.log("Jquery is ready!");
+	$('form').submit(function ()
+	{	
+		$.post('http://localhost:8080/index.php', 'heeeelp');
+		console.log("Submitting");
+	
+	}
+);
+
+
+});
+
+
+</script>
+  </head>
+  <body>
+    <main>
+      <table>
+        <tr>
+          <th><img src="cat.gif" alt="Keyboard Warrior"></th>
+          <th>
+            <section class="chat">
+            </section>
+
+            <form action="sendMessage(document.getElementById('chatInput').value);">
+              <input type="text" placeholder="Send a message!" name="message"/>
+              <input type="submit">Send</button>
+            </form>
+          </th>
+        </tr>
+      </table>
+    </main>
+    <script src="https://unpkg.com/socket.io-client@2/dist/socket.io.slim.js"></script>
+    <script src="https://unpkg.com/cookie_js@1.2.2/cookie.min.js"></script>
+    <script src="chat.js"></script>
+  </body>
+</html>

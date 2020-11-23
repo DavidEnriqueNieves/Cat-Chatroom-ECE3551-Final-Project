@@ -1,0 +1,53 @@
+<!-- ./public/index.html -->
+
+<?php
+
+require __DIR__ . '/vendor/autoload.php';
+// https://getcomposer.org/doc/01-basic-usage.md#autoloading
+
+$host = (string)getenv("INFLUX_HOST");
+$port = (string)getenv("INFLUX_PORT");
+$client = new InfluxDB\Client($host, $port);
+$database = $client->selectDB('polichat');
+	
+echo "<script>alert(\"message is" . strval($_POST("message")) . "\")</script>";
+//$result = $database->query('INSERT message,user="mongolian_basket_waver" political_leaning="democratic democratist",message="help me",length=7');
+echo $host;
+echo $port;
+
+?>
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>BotChat</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="public/style.css">
+  </head>
+  <body>
+    <main>
+      <table>
+        <tr>
+          <th><img src="public/cat.gif" alt="Keyboard Warrior"></th>
+          <th>
+            <section class="chat">
+            </section>
+
+            <form>
+              <input type="text" placeholder="Send a message!" />
+              <button>Send</button>
+            </form>
+          </th>
+        </tr>
+      </table>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://unpkg.com/socket.io-client@2/dist/socket.io.slim.js"></script>
+    <script src="https://unpkg.com/cookie_js@1.2.2/cookie.min.js"></script>
+    <script src="public/chat.js"></script>
+  </body>
+</html>
+
+
+

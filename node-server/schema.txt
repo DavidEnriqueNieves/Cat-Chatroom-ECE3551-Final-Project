@@ -1,0 +1,9 @@
+    {
+      measurement: 'message',
+      fields: { length: Influx.FieldType.INTEGER },
+      tags: ['user', 'political-leaning', 'from', 'to', 'dm-or-group']
+    }
+
+Sample Insert
+INSERT message,user="mongolian_basket_waver" political_leaning="democratic democratist",message="help me",length=7
+
