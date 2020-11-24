@@ -30,7 +30,6 @@ $(document).ready(function() {
 		var fromString = current_user;
 		var toString = 'David';
                 var timeStamp = Math.floor(Date.now() * 1000 * 1000);
-
 		if(messageString == "" &&  status != "updating")
 		{
 			alert("Enter something in the chat");
@@ -54,6 +53,7 @@ $(document).ready(function() {
 			}  
 		});
 		console.log("Submitting");
+//		updateChat(current_user);
 		}
 		return false;
 	});
@@ -62,7 +62,6 @@ $(document).ready(function() {
 
 
 var latestTime = 0;
-
 setInterval( 
 
 
@@ -72,11 +71,11 @@ function updateChat(current_user)
 	var messages = [];
 	$.post(webaddress,{'updateTime' : latestTime} , function(data)
 	{
-			console.log("Data is empty!");
-			console.log(data);
-		if(data == '')
+		console.log("Data is");
+		console.log(data.length);
+		if(!data.replace(/\s/g, ''))
 		{	
-
+		console.log("Data is empty");
 		}
 		else
 		{
@@ -92,16 +91,17 @@ function updateChat(current_user)
 				chatHTML = chatHTML.concat(returnMessageHTML(jsons[i]));
 			}
 			document.getElementById('chat').innerHTML = chatHTML;
-		        latestTime = Math.floor(Date.now() * 1000 * 1000);
+			latestTime = Date.parse(jsons[jsons.length - 1].time) * 1000 * 1000;
 			console.log("LatestTime is now");
-			console.log(latestTime);
+			
+			console.log((Date.parse(jsons[jsons.length - 1].time)));
 		}
 	});
 }
 
 
 
-, 1000);
+, 500);
 function returnMessageHTML(messageJSON, current_user)
 {
 var html = "";
