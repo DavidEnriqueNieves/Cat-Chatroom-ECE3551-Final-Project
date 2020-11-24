@@ -36,7 +36,7 @@ $client = $database->getClient();
 
 
 $database = $client->selectDB('polichat');
-if(True)
+if(isset($_POST['from']) && isset($_POST['to']) && isset($_POST['message']) && isset($_POST['length']) && $_POST['message'] != "")
 {
 	$points = array(
 		new InfluxDB\Point(
@@ -48,12 +48,13 @@ if(True)
 		)
 	);
 	$result = $database->writePoints($points, InfluxDB\Database::PRECISION_SECONDS);
-	
+}
+
 	foreach ($database->query('SELECT * FROM message;')->getPoints() as $row) {
 	    echo json_encode($row);
 	    echo '|';
 	}
-}
+
 
 
 

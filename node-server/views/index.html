@@ -7,7 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
 
-
+    <script src="https://unpkg.com/socket.io-client@2/dist/socket.io.slim.js"></script>
+    <script src="https://unpkg.com/cookie_js@1.2.2/cookie.min.js"></script>
+    <script src="chat.js"></script>
 <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
 <script type='text/javascript'>
 // console.log("PHP HOST");
@@ -55,11 +57,11 @@ $(document).ready(function() {
 	});
 });
 
-function updateChat()
+function updateChat(current_user)
 {
 	status = "updating";
 	var messages = [];
-	$.get(webaddress,{'startTime' : Math.floor(Date.now() / 1000), 'endTime' : } , function(data)
+	$.get(webaddress,{'startTime' : Math.floor(Date.now() / 1000), 'endTime' :  100000 } , function(data)
 	{
 		var jsons = [];
 		messages = data.split('|');
@@ -72,7 +74,7 @@ function updateChat()
 		var chatHTML = "";
 		for(i = 0; i<jsons.length; i++)
 		{
-			console.log(returnMessageHTML(jsons[i]));
+			console.log(returnMessageHTML(jsons[i], current_user));
 			chatHTML = chatHTML.concat(returnMessageHTML(jsons[i]));
 		}
 		console.log("Chat HTML is ");
@@ -84,15 +86,40 @@ function updateChat()
 	);
 }
 
-function returnMessageHTML(messageJSON)
+function returnMessageHTML(messageJSON, current_user)
 {
 console.log("Returning MessageHTML");
 var html = "";
-html = html.concat("<p>", messageJSON.message, '<p>');
+var date = new Date(messageJSON.time);
+var hours = date.getHours();
+var minutes = date.getMinutes();
+minutes = "0" + minutes;
+console.log('FROM is');
+var from = String(messageJSON.from);
+from = from.replace(/\s/g, '');
+var nowUser = String(cookie.get('user'));
+nowUser = nowUser.replace(/\s/g, '');
+// https://stackoverflow.com/questions/39688987/javascript-strings-are-equal-but-comparing-returns-false
+
+console.log(String(from) == String(nowUser));
+var authorType = "";
+if(String(from) == String(nowUser))
+{
+authorType = 'user';
+}
+else
+{
+authorType = 'non-user';
+}
+
+html = html.concat("<div class='message'><div class='" +authorType + "'><p>", messageJSON.message, '</p></div></div>');
+
 console.log(html);
 return html;
 }
 
+
+var int = self.setInterval(updateChat(cookie.get('user')), 10);
 </script>
   </head>
   <body>
@@ -106,15 +133,12 @@ return html;
 
             <form>
               <input id="chatInput" type="text" placeholder="Send a message!" name="message"/>
-              <input type="submit">Send</input>
+              <input type="submit"></input>
               <button onclick="updateChat();">Update</button>
             </form>
           </th>
         </tr>
       </table>
     </main>
-    <script src="https://unpkg.com/socket.io-client@2/dist/socket.io.slim.js"></script>
-    <script src="https://unpkg.com/cookie_js@1.2.2/cookie.min.js"></script>
-    <script src="chat.js"></script>
   </body>
 </html>

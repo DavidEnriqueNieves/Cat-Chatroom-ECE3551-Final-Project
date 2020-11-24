@@ -30,15 +30,49 @@ h1, .user-count {
 }
 
 .chat {
-  content: '';
+  overflow: auto;
   width: 500px;
   height: 400px;
   background: white;
   padding: 5px 10px;
 }
 
-.chat p {
-  margin: 0 0 5px 0;
+.message
+{
+margin: 10px;
+min-height: 50px;
+width: 100%;
+margin-bottom: 40px;
+vertical-align: middle;
+
+}
+
+
+.message * 
+{
+  text-align: center;
+  display: block;
+  border-radius: 10px;
+  min-width: 10%;
+  position: relative;
+  vertical-align: top;
+  min-height: 10px;
+  padding: 1;
+}
+
+
+.user {
+  background-color: blue;
+  float: right;
+  clear: right;
+
+}
+
+
+.non-user{
+  background-color: green;
+  float: left;
+  clear: left;
 }
 
 input, button {
