@@ -29,6 +29,8 @@ $(document).ready(function() {
 		var messageString = document.getElementById('chatInput').value;
 		var fromString = current_user;
 		var toString = 'David';
+                var timeStamp = Math.floor(Date.now() * 1000 * 1000);
+
 		if(messageString == "" &&  status != "updating")
 		{
 			alert("Enter something in the chat");
@@ -57,51 +59,62 @@ $(document).ready(function() {
 	});
 });
 
+
+
+var latestTime = 0;
+
+setInterval( 
+
+
 function updateChat(current_user)
 {
 	status = "updating";
 	var messages = [];
-	$.get(webaddress,{'startTime' : Math.floor(Date.now() / 1000), 'endTime' :  100000 } , function(data)
+	$.post(webaddress,{'updateTime' : latestTime} , function(data)
 	{
-		var jsons = [];
-		messages = data.split('|');
-		for(i = 0; i< messages.length - 1; i++)
-		{
-			console.log(messages[i]);
-			jsons.push(JSON.parse(messages[i]));
+			console.log("Data is empty!");
+			console.log(data);
+		if(data == '')
+		{	
+
 		}
-		console.log(jsons);
-		var chatHTML = "";
-		for(i = 0; i<jsons.length; i++)
+		else
 		{
-			console.log(returnMessageHTML(jsons[i], current_user));
-			chatHTML = chatHTML.concat(returnMessageHTML(jsons[i]));
+			var jsons = [];
+			messages = data.split('|');
+			for(i = 0; i< messages.length - 1; i++)
+			{
+				jsons.push(JSON.parse(messages[i]));
+			}
+			var chatHTML = document.getElementById('chat').innerHTML;
+			for(i = 0; i<jsons.length; i++)
+			{
+				chatHTML = chatHTML.concat(returnMessageHTML(jsons[i]));
+			}
+			document.getElementById('chat').innerHTML = chatHTML;
+		        latestTime = Math.floor(Date.now() * 1000 * 1000);
+			console.log("LatestTime is now");
+			console.log(latestTime);
 		}
-		console.log("Chat HTML is ");
-		console.log(chatHTML);
-		document.getElementById('chat').innerHTML = chatHTML;
-		
-		
-	}
-	);
+	});
 }
 
+
+
+, 1000);
 function returnMessageHTML(messageJSON, current_user)
 {
-console.log("Returning MessageHTML");
 var html = "";
 var date = new Date(messageJSON.time);
 var hours = date.getHours();
 var minutes = date.getMinutes();
 minutes = "0" + minutes;
-console.log('FROM is');
 var from = String(messageJSON.from);
 from = from.replace(/\s/g, '');
 var nowUser = String(cookie.get('user'));
 nowUser = nowUser.replace(/\s/g, '');
 // https://stackoverflow.com/questions/39688987/javascript-strings-are-equal-but-comparing-returns-false
 
-console.log(String(from) == String(nowUser));
 var authorType = "";
 if(String(from) == String(nowUser))
 {
@@ -114,12 +127,10 @@ authorType = 'non-user';
 
 html = html.concat("<div class='message'><div class='" +authorType + "'><p>", messageJSON.message, '</p></div></div>');
 
-console.log(html);
 return html;
 }
 
 
-var int = self.setInterval(updateChat(cookie.get('user')), 10);
 </script>
   </head>
   <body>

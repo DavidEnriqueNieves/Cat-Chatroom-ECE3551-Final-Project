@@ -50,6 +50,7 @@ vertical-align: middle;
 
 .message * 
 {
+  margin: 10px;
   text-align: center;
   display: block;
   border-radius: 10px;

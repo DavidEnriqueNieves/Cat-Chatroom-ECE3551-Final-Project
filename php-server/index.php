@@ -44,18 +44,23 @@ if(isset($_POST['from']) && isset($_POST['to']) && isset($_POST['message']) && i
 			$message, 
 			['from' => $from, 'to' => $to, 'message' => $message], // optional tags
 			['length' => strlen($message)], // optional additional fields
-			time() // Time precision has to be set to seconds!
+			floor(time()) // Time precision has to be set to seconds!
 		)
 	);
 	$result = $database->writePoints($points, InfluxDB\Database::PRECISION_SECONDS);
 }
 
-	foreach ($database->query('SELECT * FROM message;')->getPoints() as $row) {
+
+if(isset($_POST['updateTime']))
+{
+$queryString = 'SELECT * FROM message WHERE TIME >  ' . strval($_POST['updateTime']);
+
+	foreach ($database->query($queryString )->getPoints() as $row) {
 	    echo json_encode($row);
 	    echo '|';
 	}
 
-
+}
 
 
 // echo '<script language="javascript"> alert("message is' . $_POST['message'] . '"); </script>';

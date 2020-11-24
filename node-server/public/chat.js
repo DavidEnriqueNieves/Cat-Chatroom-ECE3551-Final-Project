@@ -25,16 +25,16 @@ socket.on('message', function (data) {
   $('.chat').append('<p><strong>' + String(data.user) + '</strong>: ' + String(data.message) + '</p>');
 });
 // When message is sent
-$('form').submit(function (e) {
-  // Prevent PHP! This caused problems.
-  e.preventDefault();
-  console.log("Sending chat message!");
-   console.log("User is: ");
-   console.log(String(current_user));
-  // Extract and send
-
-  // Clear text input
-});
+// $('form').submit(function (e) {
+//   // Prevent PHP! This caused problems.
+//   e.preventDefault();
+//   console.log("Sending chat message!");
+//    console.log("User is: ");
+//    console.log(String(current_user));
+//   // Extract and send
+// 
+//   // Clear text input
+// });
 
 
 

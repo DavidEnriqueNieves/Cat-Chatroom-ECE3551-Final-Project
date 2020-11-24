@@ -172,8 +172,6 @@ xhttp.setRequestHeader("Content-Type", "application/json");
 // 						$('#chat-area').append($("
 // 
 // 						"+ data.text[i] +"
-// 
-// 						"));
 // 					}	
 // 				}
 // 				document.getElementById('chat-area').scrollTop = document.getElementById('chat-area').scrollHeight;
