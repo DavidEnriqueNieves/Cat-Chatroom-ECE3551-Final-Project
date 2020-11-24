@@ -1,37 +1,60 @@
+<?php header('Access-Control-Allow-Origin: http://localhost:3000'); ?>
+
 <?php
 require __DIR__ . '/vendor/autoload.php';
 // https://getcomposer.org/doc/01-basic-usage.md#autoloading
-echo '<script src="public/chat.js"></script>';
-if(isset($_COOKIE['user'])){
-    $user = $_COOKIE['user'];
-    echo '<script language="javascript"> alert("Cookie user is ' . $_COOKIE['user'] . ' "); </script>';
-}
-else
-{
-echo '<script language="javascript"> var user= prompt("Enter username"); document.cookie="user=" + user </script>';
-
-}
-
 
 $host = (string)getenv("INFLUX_HOST");
-$port = intval(getenv("INFLUX_PORT"));
+$port = (string)getenv("INFLUX_PORT");
 $user = (string)getenv("INFLUX_USER");
 $pass = (string)getenv("INFLUX_PSSWD");
-$client = new \crodas\InfluxPHP\Client(
-    $host, // host
-    $port,        // port
-    $pass,      // user
-    $pass       // password
+$dbname = 'polichat';
+$database = InfluxDB\Client::fromDSN(sprintf('influxdb://%s:%s@%s:%s/%s', $user, $pass, $host, $port, $dbname));
+//$client = new \crodas\InfluxPHP\Client(
+//    $host, // host
+//    $port,        // port
+//    $pass,      // user
+//    $pass       // password
+//);
+//
+$message = $_POST['message'];
+$from = $_POST['from'];
+$to = $_POST['to'];
+$length = $_POST['length'];
+
+$client = $database->getClient();
+//$result = $db->query('INSERT message,user="mongolian_basket_waver" political_leaning="democratic democratist",message="help me",length=7');
+//$db->insert("polichat",[['tags' => ['type' => 'one'], 'fields' => ['value' => 10]]]);
+
+//$db->insert("foobar", array(
+//            array('name' => 'lala',   'fields' => array('type' => 'foobar', 'karma' => 25)),
+ //           array(   'fields' => array('type' => 'foobar', 'karma' => 45)),
+  //          ));
+//$db->insert("message",['fields' => ['length' => $length], 'tags' => [ 'from' => $from, 'to' => $to, 'message' => $message]]);
+
+//$db->query('INSERT message,user="' + $_COOKIE['user']  + +'",message="' + $_POST['message'] +'" from="' + $_POST['from']+ '",length=' +$_POST['length'] + ';');
+
+
+$database = $client->selectDB('polichat');
+
+$points = array(
+	new InfluxDB\Point(
+		'message', // name of the measurement
+		$message, 
+		['from' => $from, 'to' => $to, 'message' => $message], // optional tags
+		['length' => strlen($message)], // optional additional fields
+		time() // Time precision has to be set to seconds!
+	)
 );
-//$db->query('INSERT INTO message,user="' + $_COOKIE['user'] + '" political-leaning=';
+$result = $database->writePoints($points, InfluxDB\Database::PRECISION_SECONDS);
 
 
-$db = $client->polichat;
-
-foreach ($db->query('SELECT * FROM message;') as $row) {
-
-    print($row->message);
+foreach ($database->query('SELECT * FROM message;')->getPoints() as $row) {
+    echo var_dump($row);
 }
+
+
+
 
 // echo '<script language="javascript"> alert("message is' . $_POST['message'] . '"); </script>';
 
@@ -41,34 +64,5 @@ foreach ($db->query('SELECT * FROM message;') as $row) {
 //echo $port;
 
 ?>
-
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>BotChat</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="public/style.css">
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://unpkg.com/socket.io-client@2/dist/socket.io.slim.js"></script>
-    <script src="https://unpkg.com/cookie_js@1.2.2/cookie.min.js"></script>  </head>
-    <main>
-      <table>
-        <tr>
-          <th><img src="public/cat.gif" alt="Keyboard Warrior"></th>
-          <th>
-            <section class="chat" id="chat">
-            </section>
-
-              <input id='chatInput' type="text" placeholder="Send a message!" name="message" />
-              <input type="submit" onclick="sendMessage(document.getElementById('chatInput').value)">Send</button>
-          </th>
-        </tr>
-      </table>
-    </main>
-  </body>
-</html>
-
 
 

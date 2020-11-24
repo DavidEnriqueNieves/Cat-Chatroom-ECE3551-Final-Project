@@ -14,21 +14,43 @@
 // console.log(process.env.PHP_HOST);
 // console.log("PHP PORT");
 // console.log(process.env.PHP_PORT);
-// 
+//
+
+var webaddress = 'http://localhost:8080';
+var currentChatRoom = 'general';
 $(document).ready(function() {
 	console.log("Jquery is ready!");
 	$('form').submit(function ()
 	{	
-		$.post('http://localhost:8080/index.php', 'heeeelp');
+		//reference  https://www.w3schools.com/jquery/tryit.asp?filename=tryjquery_ajax_post
+		var messageString = document.getElementById('chatInput').value;
+		var fromString = current_user;
+		var toString = 'David';
+		$.post(webaddress, 
+		{ 
+			message: messageString,
+			length: messageString.length,
+			from: fromString,
+			to: currentChatRoom
+		} , 
+		function(data, status){ 
+			console.log(status); 
+			if(status != "success"){
+				alert("Did not send message!");  
+			}else { 
+				console.log("sent message successfully");
+				document.getElementById('chatInput').value = '';
+			}  
+		});
 		console.log("Submitting");
-	
-	}
-);
-
-
+	});
 });
 
+function updateChat()
+{
 
+
+}
 </script>
   </head>
   <body>
@@ -40,8 +62,8 @@ $(document).ready(function() {
             <section class="chat">
             </section>
 
-            <form action="sendMessage(document.getElementById('chatInput').value);">
-              <input type="text" placeholder="Send a message!" name="message"/>
+            <form>
+              <input id="chatInput" type="text" placeholder="Send a message!" name="message"/>
               <input type="submit">Send</button>
             </form>
           </th>

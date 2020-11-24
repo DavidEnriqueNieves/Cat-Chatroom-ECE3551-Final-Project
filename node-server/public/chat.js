@@ -32,10 +32,8 @@ $('form').submit(function (e) {
    console.log("User is: ");
    console.log(String(current_user));
   // Extract and send
-  var message = $(e.target).find('input').val();
 
   // Clear text input
-  e.target.reset();
 });
 
 
