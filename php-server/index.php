@@ -36,23 +36,24 @@ $client = $database->getClient();
 
 
 $database = $client->selectDB('polichat');
-
-$points = array(
-	new InfluxDB\Point(
-		'message', // name of the measurement
-		$message, 
-		['from' => $from, 'to' => $to, 'message' => $message], // optional tags
-		['length' => strlen($message)], // optional additional fields
-		time() // Time precision has to be set to seconds!
-	)
-);
-$result = $database->writePoints($points, InfluxDB\Database::PRECISION_SECONDS);
-
-
-foreach ($database->query('SELECT * FROM message;')->getPoints() as $row) {
-    echo var_dump($row);
+if(True)
+{
+	$points = array(
+		new InfluxDB\Point(
+			'message', // name of the measurement
+			$message, 
+			['from' => $from, 'to' => $to, 'message' => $message], // optional tags
+			['length' => strlen($message)], // optional additional fields
+			time() // Time precision has to be set to seconds!
+		)
+	);
+	$result = $database->writePoints($points, InfluxDB\Database::PRECISION_SECONDS);
+	
+	foreach ($database->query('SELECT * FROM message;')->getPoints() as $row) {
+	    echo json_encode($row);
+	    echo '|';
+	}
 }
-
 
 
 

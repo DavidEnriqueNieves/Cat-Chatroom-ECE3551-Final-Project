@@ -5,7 +5,7 @@
     <title>BotChat</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css">i
+    <link rel="stylesheet" href="style.css">
 
 
 <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
@@ -15,17 +15,24 @@
 // console.log("PHP PORT");
 // console.log(process.env.PHP_PORT);
 //
-
+var howFarBack = "1d";
 var webaddress = 'http://localhost:8080';
 var currentChatRoom = 'general';
+var status = "standby";
 $(document).ready(function() {
 	console.log("Jquery is ready!");
-	$('form').submit(function ()
+	$('form').submit(function (event)
 	{	
 		//reference  https://www.w3schools.com/jquery/tryit.asp?filename=tryjquery_ajax_post
 		var messageString = document.getElementById('chatInput').value;
 		var fromString = current_user;
 		var toString = 'David';
+		if(messageString == "" &&  status != "updating")
+		{
+			alert("Enter something in the chat");
+		}
+		else if(messageString != null)
+		{
 		$.post(webaddress, 
 		{ 
 			message: messageString,
@@ -43,14 +50,49 @@ $(document).ready(function() {
 			}  
 		});
 		console.log("Submitting");
+		}
+		return false;
 	});
 });
 
 function updateChat()
 {
-
-
+	status = "updating";
+	var messages = [];
+	$.get(webaddress,{'startTime' : Math.floor(Date.now() / 1000), 'endTime' : } , function(data)
+	{
+		var jsons = [];
+		messages = data.split('|');
+		for(i = 0; i< messages.length - 1; i++)
+		{
+			console.log(messages[i]);
+			jsons.push(JSON.parse(messages[i]));
+		}
+		console.log(jsons);
+		var chatHTML = "";
+		for(i = 0; i<jsons.length; i++)
+		{
+			console.log(returnMessageHTML(jsons[i]));
+			chatHTML = chatHTML.concat(returnMessageHTML(jsons[i]));
+		}
+		console.log("Chat HTML is ");
+		console.log(chatHTML);
+		document.getElementById('chat').innerHTML = chatHTML;
+		
+		
+	}
+	);
 }
+
+function returnMessageHTML(messageJSON)
+{
+console.log("Returning MessageHTML");
+var html = "";
+html = html.concat("<p>", messageJSON.message, '<p>');
+console.log(html);
+return html;
+}
+
 </script>
   </head>
   <body>
@@ -59,12 +101,13 @@ function updateChat()
         <tr>
           <th><img src="cat.gif" alt="Keyboard Warrior"></th>
           <th>
-            <section class="chat">
+            <section id = 'chat' class="chat">
             </section>
 
             <form>
               <input id="chatInput" type="text" placeholder="Send a message!" name="message"/>
-              <input type="submit">Send</button>
+              <input type="submit">Send</input>
+              <button onclick="updateChat();">Update</button>
             </form>
           </th>
         </tr>
