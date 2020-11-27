@@ -102,14 +102,15 @@
 // 	}
 // }
 // 
-// //send the message
+// 
 
+//send the message
 function sendMessage(message) {
- console.log("Message is ");
-console.log(message);
+    console.log("Message is ");
+    console.log(message);
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "http://localhost:8080/index.php", true);
-xhttp.setRequestHeader("Content-Type", "application/json");
+    xhttp.setRequestHeader("Content-Type", "application/json");
 
     xhttp.onreadystatechange = function() {
 	console.log(this.status);

@@ -7,3 +7,9 @@ Not using this crap anymore
 
 
 sudo apt install php-curl
+
+php -S localhost:8080
+export INFLUX_HOST=localhost
+export INFLUX_PORT=8086
+export INFLUX_USER=root
+export INFLUX_PSSWD=root

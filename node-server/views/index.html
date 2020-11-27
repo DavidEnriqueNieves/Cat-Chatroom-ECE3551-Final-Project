@@ -12,122 +12,123 @@
     <script src="chat.js"></script>
 <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
 <script type='text/javascript'>
-// console.log("PHP HOST");
-// console.log(process.env.PHP_HOST);
-// console.log("PHP PORT");
-// console.log(process.env.PHP_PORT);
-//
+  
 var howFarBack = "1d";
 var webaddress = 'http://localhost:8080';
 var currentChatRoom = 'general';
 var status = "standby";
+
+// function runs when document is loaded
 $(document).ready(function() {
 	console.log("Jquery is ready!");
+  // Form button is called
 	$('form').submit(function (event)
-	{	
+	{
 		//reference  https://www.w3schools.com/jquery/tryit.asp?filename=tryjquery_ajax_post
 		var messageString = document.getElementById('chatInput').value;
 		var fromString = current_user;
 		var toString = 'David';
-                var timeStamp = Math.floor(Date.now() * 1000 * 1000);
+    var timeStamp = Math.floor(Date.now() * 1000 * 1000);
+
+    // If message input is empty and system not busy
 		if(messageString == "" &&  status != "updating")
 		{
-			alert("Enter something in the chat");
+		    alert("Enter something in the chat");
 		}
+    // Send message to Influx (Through PHP!)
 		else if(messageString != null)
 		{
-		$.post(webaddress, 
-		{ 
-			message: messageString,
-			length: messageString.length,
-			from: fromString,
-			to: currentChatRoom
-		} , 
-		function(data, status){ 
-			console.log(status); 
-			if(status != "success"){
-				alert("Did not send message!");  
-			}else { 
-				console.log("sent message successfully");
-				document.getElementById('chatInput').value = '';
-			}  
-		});
-		console.log("Submitting");
-//		updateChat(current_user);
+		    $.post(webaddress,
+    		{
+    			message: messageString,
+    			length: messageString.length,
+    			from: fromString,
+    			to: currentChatRoom
+    		},
+    		function(data, status) { // Executes when post success
+    			console.log(status);
+    			if(status != "success") {
+    				alert("Did not send message!");
+    			} else {
+    				console.log("sent message successfully");
+    				document.getElementById('chatInput').value = '';
+    			}
+    		});
+    		console.log("Submitting");
+    //		updateChat(current_user);
 		}
 		return false;
 	});
 });
 
-
-
+// Set update method to run every .5 seconds
 var latestTime = 0;
-setInterval( 
+setInterval(
 
+  function updateChat(current_user)
+  {
+  	status = "updating";
+  	var messages = [];
+  	$.post(webaddress,{'updateTime' : latestTime} , function(data) {
+  		console.log("Data is");
+  		console.log(data.length);
 
-function updateChat(current_user)
-{
-	status = "updating";
-	var messages = [];
-	$.post(webaddress,{'updateTime' : latestTime} , function(data)
-	{
-		console.log("Data is");
-		console.log(data.length);
-		if(!data.replace(/\s/g, ''))
-		{	
-		console.log("Data is empty");
-		}
-		else
-		{
-			var jsons = [];
-			messages = data.split('|');
-			for(i = 0; i< messages.length - 1; i++)
-			{
-				jsons.push(JSON.parse(messages[i]));
-			}
-			var chatHTML = document.getElementById('chat').innerHTML;
-			for(i = 0; i<jsons.length; i++)
-			{
-				chatHTML = chatHTML.concat(returnMessageHTML(jsons[i]));
-			}
-			document.getElementById('chat').innerHTML = chatHTML;
-			latestTime = Date.parse(jsons[jsons.length - 1].time) * 1000 * 1000;
-			console.log("LatestTime is now");
-			
-			console.log((Date.parse(jsons[jsons.length - 1].time)));
-		}
-	});
-}
+      //Check if Data is empty
+  		if(!data.replace(/\s/g, '')) {
+  		    console.log("Data is empty");
+  		} else {
+        
+        // collect all messages
+  			var jsons = [];
+  			messages = data.split('|');
+  			for(i = 0; i< messages.length - 1; i++)
+  			{
+  				jsons.push(JSON.parse(messages[i]));
+  			}
+  			var chatHTML = document.getElementById('chat').innerHTML;
+        
+        // Add all messages to chat
+  			for(i = 0; i<jsons.length; i++)
+  			{
+  				chatHTML = chatHTML.concat(returnMessageHTML(jsons[i]));
+  			}
+  			document.getElementById('chat').innerHTML = chatHTML;
 
-
+        // Update latest time checked
+  			latestTime = Date.parse(jsons[jsons.length - 1].time) * 1000 * 1000;
+  			console.log("LatestTime is now");
+  			console.log((Date.parse(jsons[jsons.length - 1].time)));
+  		}
+  	});
+  }
 
 , 500);
+
+
 function returnMessageHTML(messageJSON, current_user)
 {
-var html = "";
-var date = new Date(messageJSON.time);
-var hours = date.getHours();
-var minutes = date.getMinutes();
-minutes = "0" + minutes;
-var from = String(messageJSON.from);
-from = from.replace(/\s/g, '');
-var nowUser = String(cookie.get('user'));
-nowUser = nowUser.replace(/\s/g, '');
-// https://stackoverflow.com/questions/39688987/javascript-strings-are-equal-but-comparing-returns-false
+  var html = "";
+  var date = new Date(messageJSON.time);
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  minutes = "0" + minutes;
+  var from = String(messageJSON.from);
+  from = from.replace(/\s/g, '');
+  var nowUser = String(cookie.get('user'));
+  nowUser = nowUser.replace(/\s/g, '');
+  // https://stackoverflow.com/questions/39688987/javascript-strings-are-equal-but-comparing-returns-false
 
-var authorType = "";
-if(String(from) == String(nowUser))
-{
-authorType = 'user';
-}
-else
-{
-authorType = 'non-user';
-}
+  // Determine if author was user or non-user
+  var authorType = "";
+  if(String(from) == String(nowUser)) {
+    authorType = 'user';
+  } else {
+    authorType = 'non-user';
+  }
 
-html = html.concat("<div class='message'><div class='" +authorType + "'><p>", messageJSON.message, '</p></div></div>');
-
-return html;
+  // Construct message html
+  html = html.concat("<div class='message'><div class='" +authorType + "'><p>", messageJSON.message, '</p></div></div>');
+  return html;
 }
 
 
