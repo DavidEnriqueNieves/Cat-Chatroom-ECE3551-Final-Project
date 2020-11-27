@@ -35,9 +35,12 @@ if(isset($_POST['from']) && isset($_POST['to']) && isset($_POST['message']) && i
 }
 
 
-if(isset($_POST['updateTime']))
+if(isset($_POST['updateTime']) && isset($_POST['to']))
 {
-$queryString = 'SELECT * FROM message WHERE TIME >  ' . strval($_POST['updateTime']);
+$queryString = 'SELECT * FROM message WHERE  "to"=\'' . $to  .  '\' AND time  >  ' . strval($_POST['updateTime']);
+
+//echo  $queryString;
+
 	// Return all records after most recent update
 	foreach ($database->query($queryString )->getPoints() as $row) {
 	    echo json_encode($row);

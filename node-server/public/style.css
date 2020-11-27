@@ -31,16 +31,15 @@ h1, .user-count {
 
 .chat {
   overflow: auto;
-  width: 500px;
+  width: 700px;
   height: 400px;
-  background: white;
   padding: 5px 10px;
 }
 
 .message
 {
-margin: 10px;
-min-height: 50px;
+margin: 20px;
+min-height: 80px;
 width: 100%;
 margin-bottom: 40px;
 vertical-align: middle;
@@ -62,11 +61,13 @@ vertical-align: middle;
 }
 
 
+
+
 .user {
   background-color: blue;
   float: right;
   clear: right;
-
+  color: white;
 }
 
 
@@ -74,6 +75,7 @@ vertical-align: middle;
   background-color: green;
   float: left;
   clear: left;
+  color: white;
 }
 
 input, button {
