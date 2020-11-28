@@ -49,6 +49,37 @@ $queryString = 'SELECT * FROM message WHERE  "to"=\'' . $to  .  '\' AND time  > 
 
 }
 
+$username = $_POST['new_username'];
+$password = $_POST['new_password'];
+$database = $client->selectDB('login');
+
+// Check for existing user (no password should be set yet!)
+if(isset($_POST['new_username']) && !isset($_POST['new_password']))
+{
+	// Check username
+	$queryString = 'SELECT * FROM username WHERE'
+}
+
+// Login to existing user (check password on file)
+if(isset($_POST['new_username']) && isset($_POST['new_password'] && !isset($_POST['register']))
+{
+	// Check password
+	$queryString = 'SELECT * FROM username WHERE'
+}
+
+// Register new account
+if(isset($_POST['new_username']) && isset($_POST['new_password']) && isset($_POST['register']))
+{
+	$points = array(
+		new InfluxDB\Point(
+			'username', // name of the measurement
+			$username, 
+			['username' => $username, 'password' => $password], // optional tags
+			floor(time()) // Is this necessary?
+		)
+	);
+	$result = $database->writePoints($points, InfluxDB\Database::PRECISION_SECONDS);
+}
 ?>
 
 
