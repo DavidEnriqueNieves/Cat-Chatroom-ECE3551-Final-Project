@@ -49,37 +49,59 @@ $queryString = 'SELECT * FROM message WHERE  "to"=\'' . $to  .  '\' AND time  > 
 
 }
 
-$username = $_POST['new_username'];
-$password = $_POST['new_password'];
 $database = $client->selectDB('login');
 
 // Check for existing user (no password should be set yet!)
-if(isset($_POST['new_username']) && !isset($_POST['new_password']))
+if(isset($_POST['new_username']))
 {
 	// Check username
-	$queryString = 'SELECT * FROM username WHERE'
+	$queryString = 'SELECT "value" FROM "username" WHERE "name"=\'' . (string)($_POST['new_username']) . '\'';
+foreach ($database->query($queryString )->getPoints() as $row) {
+    echo json_encode($row);
+    echo '|';
+}
+if(isset($_POST['register']) && isset($_POST['new_password']))
+	{
+	
+	$username = (string)($_POST['new_username']);
+	$password = (string)($_POST['new_password']);
+	$time = (string)(floor(time()));
+		$points = array(
+			new InfluxDB\Point(
+				'username', // name of the measurement
+				$username,
+				['name' => $username, 'password' => $password], // optional tags
+				['time' => $time],
+				floor(time()) // Time precision has to be set to seconds!
+			)
+		);
+		$result = $database->writePoints($points, InfluxDB\Database::PRECISION_SECONDS);
+		echo "success";
+	}
 }
 
+
 // Login to existing user (check password on file)
-if(isset($_POST['new_username']) && isset($_POST['new_password'] && !isset($_POST['register']))
+if(isset($_POST['verify-username']) && isset($_POST['verify-password']))
 {
+	$username = (string)($_POST['verify-username']);
+	$password = (string)($_POST['verify-password']);
 	// Check password
-	$queryString = 'SELECT * FROM username WHERE'
+	$queryString = 'SELECT * FROM "username" WHERE "name"=\'' .  $username . '\'';
+	foreach ($database->query($queryString )->getPoints() as $row) {
+	    $jsonThing = (object)$row;
+	    $actual_password  = (string)($jsonThing->password); 
+	    if($actual_password == $password)
+		{
+			echo "success";		
+		}
+	}
+
 }
 
 // Register new account
-if(isset($_POST['new_username']) && isset($_POST['new_password']) && isset($_POST['register']))
-{
-	$points = array(
-		new InfluxDB\Point(
-			'username', // name of the measurement
-			$username, 
-			['username' => $username, 'password' => $password], // optional tags
-			floor(time()) // Is this necessary?
-		)
-	);
-	$result = $database->writePoints($points, InfluxDB\Database::PRECISION_SECONDS);
-}
+
+
 ?>
 
 
