@@ -27,7 +27,7 @@ $(document).ready(function() {
 	{
 		//reference  https://www.w3schools.com/jquery/tryit.asp?filename=tryjquery_ajax_post
 		var messageString = document.getElementById('chatInput').value;
-		var fromString = current_user;
+		var fromString = cookie.get('user');
 		var toString = 'David';
     var timeStamp = Math.floor(Date.now() * 1000 * 1000);
 
@@ -100,7 +100,8 @@ console.log("Posting!!");
                 console.log("successfully registered!");
               }
             });
-            cookie.set('user', current_user);
+           current_user = new_username; 
+            cookie.set('user', new_username);
         }
 
       } else {
@@ -120,7 +121,8 @@ console.log("Posting!!");
 	      console.log(data);
               if (data.replace(/\s/g, '')=="success") {
                 cookie.set('user', new_username);
-		alert("Welcome back, David");
+		current_user = cookie.get('user');
+		alert("Welcome back " + current_user);
               }
 		else
 	      {
@@ -193,7 +195,7 @@ function returnMessageHTML(messageJSON, current_userr, latestTime)
   var minutes = date.getMinutes();
   var day = date.getDate();
   var month = date.getMonth();
-  var year = date.getYear();
+  var year = date.getFullYear();
   if(parseInt(minutes) <10 )
 {
   
