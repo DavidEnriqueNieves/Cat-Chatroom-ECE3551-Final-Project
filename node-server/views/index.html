@@ -61,7 +61,84 @@ $(document).ready(function() {
 	});
 });
 
-// Set update method to run every .5 seconds
+////////////////////////////////////////////////////////////
+//                    LOGIN SECTION
+////////////////////////////////////////////////////////////
+
+if (current_user == undefined) {
+  console.log("Making a user");
+
+  // NEW LOGIN SYSTE
+  var webaddress = 'http://localhost:8080/';
+  var new_username = prompt('Username:');
+  while(new_username == false) {
+	new_username = prompt('Enter a valid username!:');
+  }
+console.log("Posting!!");
+    // If username exists in database
+    console.log("POosting to " + webaddress);
+    $.post(webaddress,{'new_username' : new_username} , function(data) {                    // First DB call
+      if(!data.replace(/\s/g, '')) {
+        console.log( 'No such user exists, make new account');
+        var new_password = prompt('Make a new account, type a password:');
+        if (new_password == false) {
+          alert('Password can\'t be empty!');
+        } else {
+          // push to database                                                              2nd DB call
+          $.post(webaddress,
+            {
+              'new_username': new_username,
+              'new_password': new_password,
+              'register': "yes"
+            },
+            function(data, status) {
+              console.log(status);
+              if(status != "success") {
+                alert("Registration failed.");
+              } else {
+                console.log("successfully registered!");
+              }
+            });
+            cookie.set('user', current_user);
+        }
+
+      } else {
+        // Log in with password
+	new_password = prompt("Enter your password " + new_username + ": ");
+        while(new_password == false) {
+          new_password = prompt('Password can\'t be empty!: ');
+        } 
+          // If password matches records                                                 3rd DB call
+          $.post(webaddress,
+            {
+              'verify-username' : new_username,
+              'verify-password' : new_password
+            }, 
+            function(data) {
+	      console.log("Data is");
+	      console.log(data);
+              if (data.replace(/\s/g, '')=="success") {
+                cookie.set('user', new_username);
+		alert("Welcome back, David");
+              }
+		else
+	      {
+		alert("Wrong Password");
+//		location.reload();	
+              }
+
+            });
+        }
+      });
+  }
+
+////////////////////////////////////////////////////////////
+//                    DISPLAY SECTION
+////////////////////////////////////////////////////////////
+
+
+
+//Set update method to run every .5 seconds
 var latestTime = 0;
 setInterval(
 
@@ -69,7 +146,7 @@ setInterval(
   {
   	status = "updating";
   	var messages = [];
-  	$.post(webaddress,{'updateTime' : latestTime} , function(data) {
+  	$.post(webaddress,{'updateTime' : latestTime, 'to' : currentChatRoom} , function(data) {
   		console.log("Data is");
   		console.log(data.length);
 
@@ -105,13 +182,13 @@ setInterval(
 , 500);
 
 
-function returnMessageHTML(messageJSON, current_user)
+function returnMessageHTML(messageJSON, current_userr, latestTime)
 {
   var html = "";
   var date = new Date(messageJSON.time);
   var hours = date.getHours();
   var minutes = date.getMinutes();
-  if(parseInt(minutes) <=10 )
+  if(parseInt(minutes) <10 )
 {
   
 	minutes = "0" + minutes;
@@ -139,6 +216,29 @@ minutes = minutes + " AM";
     authorType = 'user';
   } else {
     authorType = 'non-user';
+
+//    if(latestTime != 0)
+//	{
+//
+//	    var audio = new Audio("public/meow1.mp3");
+//	    if(document.getElementById('meow').value == 
+//	    audio.play();
+//	}
+    console.log("Value of meow is ");
+    console.log(document.getElementById("meow").value);
+var urls = ["https://raw.githubusercontent.com/DavidEnriqueNieves/multifarious-final/master/node-server/public/meow1.wav", "https://raw.githubusercontent.com/DavidEnriqueNieves/multifarious-final/master/node-server/public/meow2.wav", "https://raw.githubusercontent.com/DavidEnriqueNieves/multifarious-final/master/node-server/public/meow3.wav", "https://raw.githubusercontent.com/DavidEnriqueNieves/multifarious-final/master/node-server/public/meow4.wav"];
+var randomIndex = Math.floor(Math.random() * urls.length);
+console.log("Random Index is");
+console.log(randomIndex);
+console.log("URL IS");
+console.log(urls[randomIndex]);
+    if(document.getElementById("meow").checked == true)
+    {
+    console.log("True");
+    var audio = new Audio(urls[randomIndex]);
+    audio.play();
+    }
+
   }
 
   // Construct message html
@@ -147,19 +247,13 @@ minutes = minutes + " AM";
 }
 
 
-function scrollDown()
-{
-var elmnt = document.getElementById("chat");
-elmnt.scrollIntoView(false);
-}
-
-scrollDown();
 
 </script>
   </head>
   <body>
     <main>
       <h1>CAT CHAT</h1>
+
       <table style="width: 100%;">
         <tr>
           <th><img src="cat.gif" alt="Keyboard Warrior"></th>
@@ -172,6 +266,10 @@ scrollDown();
               <input id="chatInput" type="text" placeholder="Send a message!" name="message"/>
               <input type="submit"></input>
             </form>
+	      <div><input style="width: 10%;" type="checkbox" id="meow" value="on"></input><p>Click to Meow</p>
+      <button style="width: 10%;" onclick="document.cookie = 'user' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;'; location.reload(); "> SIGN OUT </button>
+</div>
+
           </th>
         </tr>
       </table>
