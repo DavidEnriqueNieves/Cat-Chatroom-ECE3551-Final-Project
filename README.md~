@@ -131,39 +131,37 @@ Schema, Table, Interactions - (Design choices/examples of each)
 
 The design for the message schema is as follows: 
 
-```
-{​
+` `{​
 
-measurement: 'message',​
+`      `measurement: 'message',​
 
-fields: ​
+`      `fields: ​
 
-{ ​
+`       `{ ​
 
-'length': int​
+`            `'length': int​
 
-value:  str​
+`            `value:  str​
 
-},​
+`      `},​
 
-tags ​
+`      `tags ​
 
-{​
+`      `{​
 
-'from': str​
+`          `'from': str​
 
-'to': str​
+`          `'to': str​
 
-'message': str​
+`           `'message': str​
 
-},​
+`      `},​
 
-time: long​
+`      `time: long​
 
-​
+`    `​
 
 }
-```
 
 The reasoning behind this schema design is due to the way that InfluxDB holds data. All data to be written to InfluxDB requires a measurement name, fields, tags, and a timestamp. The measurement name in this case corresponds to “message”. Although the fields are usually used for numerical values, we decided to include the length of the string (for any future applications) as well as the actual string itself (denoted as value). The tags usually include metadata about the measurement, which is why we included the “from” address, the “to” address, and the message itself in the tags. Finally, the timestamp is a Unix timestamp corresponding to the number of seconds since January 1, 1970 UTC. This timestamp is marked as when the message was processed in the PHP server.
 
@@ -175,33 +173,32 @@ The reasoning behind this schema design is due to the way that InfluxDB holds da
 
 
 
-```
-{​​
 
-measurement: 'username',​​
+` `{​​
 
-fields: ​
+`      `measurement: 'username',​​
 
-{ ​​
+`      `fields: ​
 
-'value':  str​
+`      `{ ​​
 
-},​​
+`          `'value':  str​
 
-tags: ​
+`       `},​​
 
-{​
+`      `tags: ​
 
-'name': str​
+`      `{​
 
-'password': str​
+`          `'name': str​
 
-}​,​
+`          `'password': str​
 
-time: long​
+`       `}​,​
 
-}​​
-```
+`       `time: long​
+
+`    `}​​
 
 This measurement schema corresponds to the usernames and associated passwords stored in InfluxDB. As can be seen here, the only field corresponds to the value of the username itself. The tags include the username and the password of the user. Finally, the timestamp marks when the PHP server processed this user and thus can also serve as a marker for when the username was created. 
 
@@ -311,38 +308,37 @@ The directory tree looks like this:
 
 1. Install Composer
 
-```php -r "copy('<https://getcomposer.org/installer>', 'composer-setup.php');"```
+php -r "copy('<https://getcomposer.org/installer>', 'composer-setup.php');"
 
 1. Install php-curl
 
-```sudo apt-get install -y php5-curl```
+sudo apt-get install -y php5-curl
 
 1. Install InfluxDB-PHP using composer
 
-```composer require influxdb/influxdb-php```
+`	`composer require influxdb/influxdb-php
 
 1. Run the node server inside of the node-server directory
 
-```sudo node node-server/index.js```
+` `sudo node node-server/index.js
 
 1. Export the following environment variables with their corresponding values in your setup. The default values will be shown.
-```
-export INFLUX\_HOST=localhost
 
-export INFLUX\_PORT=8086
+`	`export INFLUX\_HOST=localhost
 
-export INFLUX\_USER=root
+`	`export INFLUX\_PORT=8086
 
-export INFLUX\_PSSWD=root
-```
+`	`export INFLUX\_USER=root
+
+`	`export INFLUX\_PSSWD=root
+
 1. Run the PHP server inside of the php-server directory
 
-```
 cd php-server
 
 sudo php -S localhost:8080	
 
-```
+
 
 **Future Work**
 
