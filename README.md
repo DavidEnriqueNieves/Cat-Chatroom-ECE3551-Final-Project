@@ -1,6 +1,6 @@
-﻿**Multifarious Systems 1 - Final Project**
+# ﻿**Multifarious Systems 1 - Final Project**
 
-**Modular Multi-Purpose Chat Room**
+## **Modular Multi-Purpose Chat Room**
 
 
 
@@ -27,7 +27,7 @@
 
 The goal of the project was to create a chat room that updates in real-time and is capable of saving messages to a database to be displayed whenever the chat was opened in the future. The project initially targeted deployment in a custom infrastructure with automated bots to use the chat. Some of these goals were out of reach, and will be outlined in the “Future Work” section.
 
-**Literature Review of Similar Projects**
+## **Literature Review of Similar Projects**
 
 -----
 The first project referenced in our own project was the “Real-time chat” from serverjs.io **[1]**. This project was the inspiration behind our original project; it utilized a chat embedded into a div form that used websockets as the primary form of communication between clients connected to the server. Natively, it uses nodejs, a Javascript server utility that we ended up sticking with. Additionally, this project gave us the idea of using cookies to track users and give the user a more “stateful” experience in the chatroom. We expanded on the cookie system with a more robust login system. The guide was a complete tutorial of how to start a simple messaging system which became a sort of template.
@@ -38,7 +38,7 @@ As for the Website-PHP-InfluxDB interactivity, it cannot be underestimated how i
 
 The interaction between PHP and InfluxDB was conducted through the use of the InfluxDB-PHP library. As such, the GitHub repository containing the code for this library **[4]** was consulted frequently for installation instructions as well as for examples. The full details of the installation are listed in the section below. 
 
-**Architecture:**
+## **Architecture:**
 
 -----
 
@@ -205,7 +205,7 @@ time: long​
 
 This measurement schema corresponds to the usernames and associated passwords stored in InfluxDB. As can be seen here, the only field corresponds to the value of the username itself. The tags include the username and the password of the user. Finally, the timestamp marks when the PHP server processed this user and thus can also serve as a marker for when the username was created. 
 
-**Functionality/Example: (full diagram attached in .zip file)**
+## **Functionality/Example: (full diagram attached in .zip file)**
 
 ![](./images/Aspose.Words.28e30710-525b-4d0b-aac7-ffa198ec6d78.017.png)
 
@@ -301,7 +301,7 @@ Additional “Click to Meow” button that plays a meow sound every time a new m
 
 ![](./images/Aspose.Words.28e30710-525b-4d0b-aac7-ffa198ec6d78.024.png)
 
-**Setup:**
+## **Setup:**
 
 How do we set up the system? What commands?
 
@@ -344,14 +344,14 @@ sudo php -S localhost:8080
 
 ```
 
-**Future Work**
+## **Future Work**
 
 -----
 Our future intentions are to create a simple video streaming service with this live chat sat beside it. The video would replace the gif of the cat, and the login system would be made to be more robust, with encryption and the proper security protocols in place. We would also like to replace our updating system with a socket-based system. 
 
 David and I are research assistants and have spent the better part of the year building a cloud agnostic server infrastructure. It was our intention of hosting this system on that architecture to make the system not only scalable, but templateable. This would mean that new chats could pop up in response to system demand. This was not implemented simply because of time constraints, however, this would be as simple as containerizing our existing code and hosting it in the infrastructure in the near future.
 
-**Team Member Contributions:**
+## **Team Member Contributions:**
 
 -----
 *Benjamin Luchterhand (Team Leader, ~45%):*
